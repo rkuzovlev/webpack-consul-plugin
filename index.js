@@ -6,7 +6,7 @@ function ConsulPlugin(consulHost, bindPort) {
     console.log('ConsulPlugin', consulHost);
     this.started = false;
     this.consul = consulLib({host: consulHost});
-    this.bindPort = bindPort;
+    this.bindPort = parseInt(bindPort);
 }
 
 
