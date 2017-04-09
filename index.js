@@ -2,12 +2,11 @@ const consulLib = require('consul');
 const os = require('os');
 const dns = require('dns');
 
-const PORT = 3333;
-
-function ConsulPlugin(consulHost) {
+function ConsulPlugin(consulHost, bindPort) {
     console.log('ConsulPlugin', consulHost);
     this.started = false;
     this.consul = consulLib({host: consulHost});
+    this.bindPort = bindPort;
 }
 
 
@@ -27,7 +26,7 @@ ConsulPlugin.prototype.apply = function(compiler) {
             let options = {
                 name: 'sf_client',
                 address: address,
-                port: PORT,
+                port: this.bindPort,
                 id: 'sf_client-' + address,
                 // check: {
                 //     http: 'http://' + address + ':' + PORT + '/api/v1/health',
@@ -37,7 +36,7 @@ ConsulPlugin.prototype.apply = function(compiler) {
 
             this.consul.agent.service.register(options,  (err) => {
                 if (err){
-                    console.error("Can't register consul client", err);
+                    return console.error("Can't register consul client", err);
                 }
                 console.log('registration done');
 
